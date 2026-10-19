@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGEDIT GAS - AI Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            blue: '#00f0ff',
+                            cyan: '#0a84ff',
+                            darkBg: '#090d16',
+                            cardBg: '#111827',
+                            cardHover: '#1f2937',
+                            border: '#1e293b'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-glow': '0 0 15px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2)',
+                        'neon-btn': '0 0 10px rgba(0, 240, 255, 0.5)',
+                        'neon-subtle': '0 0 10px rgba(10, 132, 255, 0.25)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #060911;
+            color: #f3f4f6;
+        }
+        
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .bg-checkerboard {
+            background-color: #1a202c;
+            background-image: 
+                linear-gradient(45deg, #2d3748 25%, transparent 25%), 
+                linear-gradient(-45deg, #2d3748 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #2d3748 75%), 
+                linear-gradient(-45deg, transparent 75%, #2d3748 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-grid-pattern flex flex-col antialiased selection:bg-neon-blue selection:text-black">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-neon-blue flex items-center justify-center shadow-neon-glow">
+                    <i class="fa-solid font-black text-slate-950 text-xl fa-bolt"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-cyan-400 to-indigo-400">
+                        NGEDIT GAS !
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Menu -->
+            <nav class="flex items-center space-x-1 sm:space-x-2 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+                <button id="tab-bg-btn" onclick="window.switchTab('change-bg')" class="flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 bg-neon-blue text-slate-950 font-semibold shadow-neon-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Change Background</span>
+                </button>
+                <button id="tab-history-btn" onclick="window.switchTab('gallery')" class="flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-200 transition-all duration-200">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Riwayat Output</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- ================= TAB 1: CHANGE BACKGROUND ================= -->
+        <div id="tab-change-bg" class="space-y-6">
+            
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 sm:p-4 flex items-center justify-between text-xs sm:text-sm text-slate-300">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2 py-0.5 rounded bg-neon-blue/10 text-neon-blue font-mono font-semibold text-xs border border-neon-blue/30">TIPS</span>
+                    <span>Tekan <kbd class="px-2 py-1 bg-slate-800 text-neon-blue rounded text-xs border border-slate-700">Ctrl + V</kbd> / <kbd class="px-2 py-1 bg-slate-800 text-neon-blue rounded text-xs border border-slate-700">⌘ + V</kbd> di mana saja untuk paste gambar!</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-1 text-slate-400 text-xs">
+                    <i class="fa-solid fa-microchip text-neon-blue"></i>
+                    <span>Engine: Smart AI Studio</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column -->
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg backdrop-blur-sm relative">
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-image text-neon-blue"></i> 1. Gambar Utama
+                            </label>
+                            <button id="reset-img-btn" onclick="window.clearInputImage()" class="hidden text-xs text-rose-400 hover:text-rose-300 transition-colors">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Hapus Gambar
+                            </button>
+                        </div>
+
+                        <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-neon-blue/80 bg-slate-950/60 hover:bg-slate-900/50 rounded-xl p-6 transition-all duration-300 text-center cursor-pointer relative group flex flex-col items-center justify-center min-h-[220px]">
+                            <input type="file" id="file-input" accept="image/*" class="hidden" onchange="window.handleFileSelect(event)">
+                            
+                            <div id="drop-placeholder" class="space-y-3 pointer-events-none">
+                                <div class="w-14 h-14 rounded-full bg-slate-800/80 group-hover:bg-neon-blue/10 group-hover:scale-110 flex items-center justify-center mx-auto transition-all text-slate-400 group-hover:text-neon-blue border border-slate-700 group-hover:border-neon-blue/50">
+                                    <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-sm font-semibold text-slate-200">
+                                        Klik untuk Upload <span class="text-slate-400 font-normal">atau drag & drop</span>
+                                    </p>
+                                    <p class="text-xs text-slate-500">PNG, JPG, WEBP, GIF (Atau Paste langsung)</p>
+                                </div>
+                            </div>
+
+                            <div id="input-preview-container" class="hidden w-full h-full relative group/prev">
+                                <img id="input-preview-img" class="max-h-[240px] w-auto mx-auto rounded-lg object-contain border border-slate-800 shadow-md">
+                                <div class="mt-2 text-xs text-slate-400 flex items-center justify-center gap-2">
+                                    <span id="input-dim-badge" class="px-2 py-0.5 bg-slate-800 rounded font-mono text-[11px] text-slate-300">0x0</span>
+                                    <span>Gambar Asli</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                        <label class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic text-neon-blue"></i> 2. Pengaturan Background
+                        </label>
+
+                        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+                            <button id="mode-prompt-btn" onclick="window.setMode('prompt')" class="py-2 rounded-lg font-medium transition-all bg-slate-800 text-neon-blue border border-neon-blue/30 shadow-sm">
+                                <i class="fa-solid fa-pen-nib mr-1.5"></i> Custom Prompt
+                            </button>
+                            <button id="mode-remove-btn" onclick="window.setMode('remove')" class="py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all">
+                                <i class="fa-solid fa-eraser mr-1.5"></i> Auto Remove BG
+                            </button>
+                        </div>
+
+                        <div id="remove-key-options" class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Warna Removal AI:</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <label class="flex items-center space-x-2 bg-slate-900 p-2 rounded-lg border border-slate-800 cursor-pointer hover:border-slate-700">
+                                    <input type="radio" name="bgKeyColor" value="green" checked onchange="window.setBgKeyColor('green')" class="accent-neon-blue">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                                    <span class="text-slate-300 text-[11px]">Chroma Green (Aman)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 bg-slate-900 p-2 rounded-lg border border-slate-800 cursor-pointer hover:border-slate-700">
+                                    <input type="radio" name="bgKeyColor" value="white" onchange="window.setBgKeyColor('white')" class="accent-neon-blue">
+                                    <span class="w-3 h-3 rounded-full bg-white inline-block border border-slate-600"></span>
+                                    <span class="text-slate-300 text-[11px]">Pure White (#ffffff)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="prompt-wrapper" class="space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Deskripsikan Latar Baru:</span>
+                                <button onclick="window.useSamplePrompt()" class="text-neon-blue hover:underline text-[11px]">
+                                    <i class="fa-solid fa-lightbulb"></i> Contoh Prompt
+                                </button>
+                            </div>
+                            <textarea id="prompt-input" rows="3" placeholder="Contoh: Pemandangan kota cyberpunk malam hari dengan neon biru menyala..." class="w-full bg-slate-950 border border-slate-800 focus:border-neon-blue rounded-xl p-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-neon-blue transition-all resize-none"></textarea>
+                        </div>
+
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+                            <div class="flex items-center space-x-2 text-xs text-slate-300 font-semibold">
+                                <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                                <span>Garansi Preservasi Karakter</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 leading-relaxed">
+                                AI mengenali karakter asli secara penuh dan hanya mengganti background latar tanpa mengubah pose, wajah, atau warna karakter utama.
+                            </p>
+                        </div>
+
+                        <button id="process-btn" onclick="window.executeBackgroundProcess()" class="w-full py-3.5 px-4 bg-gradient-to-r from-neon-blue via-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-bold text-sm rounded-xl shadow-neon-glow transition-all duration-300 transform active:scale-[0.99] flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-bolt text-base"></i>
+                            <span id="process-btn-text">PROSES "NGEDIT GAS!"</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="lg:col-span-7">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neon-blue animate-pulse"></span>
+                                    <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                                        Hasil Edit Output
+                                    </h2>
+                                </div>
+                                <div id="output-actions" class="opacity-30 pointer-events-none flex items-center space-x-2 transition-opacity">
+                                    <button onclick="window.toggleTransparencyBg('canvas-wrapper')" title="Toggle Grid Checkerboard" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-neon-blue transition-colors text-xs border border-slate-700">
+                                        <i class="fa-solid fa-border-all"></i> Grid
+                                    </button>
+                                    <button onclick="window.openPreviewModal()" title="Preview Ukuran Penuh" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-neon-blue transition-colors text-xs border border-slate-700">
+                                        <i class="fa-solid fa-expand"></i> Preview
+                                    </button>
+                                    <button onclick="window.downloadOutputImage()" title="Download Gambar PNG" class="px-3 py-2 rounded-lg bg-neon-blue hover:bg-cyan-400 text-slate-950 font-semibold transition-colors text-xs shadow-neon-btn flex items-center gap-1.5">
+                                        <i class="fa-solid fa-download"></i> Download PNG
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="relative mt-4 min-h-[380px] sm:min-h-[460px] bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center overflow-hidden" id="canvas-wrapper">
+                                <div id="output-placeholder" class="text-center p-6 space-y-3">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-slate-600">
+                                        <i class="fa-solid fa-photo-film text-3xl"></i>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-sm font-semibold text-slate-400">Hasil Proses Akan Muncul Di Sini</p>
+                                        <p class="text-xs text-slate-600 max-w-xs mx-auto">Upload gambar dan pilih prompt atau hapus background.</p>
+                                    </div>
+                                </div>
+
+                                <div id="output-loading" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-6 space-y-4">
+                                    <div class="relative flex items-center justify-center">
+                                        <div class="w-20 h-20 rounded-full border-2 border-slate-800 border-t-neon-blue animate-spin"></div>
+                                        <i class="fa-solid fa-bolt text-neon-blue text-2xl absolute animate-pulse"></i>
+                                    </div>
+                                    <div class="text-center space-y-1">
+                                        <p id="loading-status-title" class="text-sm font-bold text-slate-200">Menganalisis Karakter...</p>
+                                        <p id="loading-status-desc" class="text-xs text-slate-400">Mengganti latar belakang gambar...</p>
+                                    </div>
+                                </div>
+
+                                <img id="output-img" class="hidden max-h-[480px] w-auto object-contain z-10 transition-all duration-300">
+                            </div>
+                        </div>
+
+                        <div id="result-info-bar" class="hidden mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span id="res-dims" class="font-mono text-slate-300">Resolusi Preserved</span>
+                            <span class="text-[11px] text-slate-500">Klik preview untuk zoom</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: RIWAYAT GALLERY ================= -->
+        <div id="tab-gallery" class="hidden space-y-6">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-200">Riwayat Hasil Edit</h2>
+                        <p class="text-xs text-slate-400">Daftar foto yang diproses dalam sesi ini.</p>
+                    </div>
+                    <button onclick="window.clearHistory()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-950/50 hover:text-rose-300 text-slate-400 text-xs border border-slate-700 transition-colors">
+                        <i class="fa-solid fa-trash-can mr-1"></i> Bersihkan Riwayat
+                    </button>
+                </div>
+
+                <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+
+                <div id="gallery-empty" class="text-center py-16 space-y-3">
+                    <i class="fa-solid fa-folder-open text-4xl text-slate-700"></i>
+                    <p class="text-sm text-slate-500">Belum ada riwayat hasil foto.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Preview -->
+    <div id="preview-modal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="relative max-w-5xl w-full max-h-[90vh] bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass-plus text-neon-blue"></i> Preview Hasil Resolusi Tinggi
+                </h3>
+                <button onclick="window.closePreviewModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 my-4 flex items-center justify-center overflow-auto min-h-[300px] bg-checkerboard rounded-xl p-2">
+                <img id="modal-preview-img" class="max-h-[70vh] w-auto object-contain rounded-lg shadow-xl">
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-3 border-t border-slate-800">
+                <button onclick="window.closePreviewModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                    Tutup
+                </button>
+                <button onclick="window.downloadOutputImage()" class="px-4 py-2 rounded-xl bg-neon-blue hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-neon-btn flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Download PNG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 transition-all duration-300 bg-slate-900 border border-neon-blue/40 text-slate-100 px-4 py-3 rounded-xl shadow-neon-glow flex items-center space-x-3 text-xs max-w-sm pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-neon-blue text-base"></i>
+        <span id="toast-message" class="font-medium">Notifikasi...</span>
+    </div>
+
+    <script>
+        /* ================= STATE & GLOBALS ================= */
+        window.activeTab = 'change-bg';
+        window.currentMode = 'prompt';
+        window.bgKeyColor = 'green';
+
+        window.inputBase64 = null;
+        window.inputMimeType = 'image/png';
+        window.originalWidth = 0;
+        window.originalHeight = 0;
+
+        window.processedResultBase64 = null;
+        window.historyList = [];
+
+        window.samplePrompts = [
+            "Latar belakang studio fotografi profesional dengan pencahayaan neon cyan dan kebiruan halus, bokeh tinggi, 8k",
+            "Pemandangan alam pegunungan cyberpunk dengan langit malam penuh bintang dan aura neon membara",
+            "Interior kantor modern minimalis mewah dengan jendela kaca besar pemandangan kota futuristik",
+            "Latar belakang abstrak warna biru neon gradasi hitam, estetika teknologi AI tinggi"
+        ];
+
+        /* ================= INITIALIZATION ================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            window.setupDragAndDrop();
+            window.setupGlobalClipboardPaste();
+        });
+
+        /* ================= TAB NAVIGATION ================= */
+        window.switchTab = function(tabName) {
+            window.activeTab = tabName;
+            const tabBgBtn = document.getElementById('tab-bg-btn');
+            const tabHistoryBtn = document.getElementById('tab-history-btn');
+
+            const viewBg = document.getElementById('tab-change-bg');
+            const viewGallery = document.getElementById('tab-gallery');
+
+            viewBg.classList.add('hidden');
+            viewGallery.classList.add('hidden');
+
+            const inactiveClass = "flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-200 transition-all duration-200";
+            const activeClass = "flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 bg-neon-blue text-slate-950 font-semibold shadow-neon-btn";
+
+            tabBgBtn.className = inactiveClass;
+            tabHistoryBtn.className = inactiveClass;
+
+            if (tabName === 'change-bg') {
+                viewBg.classList.remove('hidden');
+                tabBgBtn.className = activeClass;
+            } else {
+                viewGallery.classList.remove('hidden');
+                tabHistoryBtn.className = activeClass;
+                window.renderGallery();
+            }
+        };
+
+        /* ================= TAB 1 FUNCTIONS ================= */
+        window.setMode = function(mode) {
+            window.currentMode = mode;
+            const promptBtn = document.getElementById('mode-prompt-btn');
+            const removeBtn = document.getElementById('mode-remove-btn');
+            const promptWrapper = document.getElementById('prompt-wrapper');
+            const removeKeyOptions = document.getElementById('remove-key-options');
+            const btnText = document.getElementById('process-btn-text');
+
+            if (mode === 'prompt') {
+                promptBtn.className = "py-2 rounded-lg font-medium transition-all bg-slate-800 text-neon-blue border border-neon-blue/30 shadow-sm";
+                removeBtn.className = "py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all";
+                promptWrapper.classList.remove('hidden');
+                removeKeyOptions.classList.add('hidden');
+                btnText.textContent = "PROSES GANTI BACKGROUND!";
+            } else {
+                removeBtn.className = "py-2 rounded-lg font-medium transition-all bg-slate-800 text-neon-blue border border-neon-blue/30 shadow-sm";
+                promptBtn.className = "py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all";
+                promptWrapper.classList.add('hidden');
+                removeKeyOptions.classList.remove('hidden');
+                btnText.textContent = "HAPUS BACKGROUND & TRANSPARAN!";
+            }
+        };
+
+        window.setBgKeyColor = function(color) {
+            window.bgKeyColor = color;
+        };
+
+        window.useSamplePrompt = function() {
+            const randomPrompt = window.samplePrompts[Math.floor(Math.random() * window.samplePrompts.length)];
+            document.getElementById('prompt-input').value = randomPrompt;
+            window.showToast("Contoh prompt berhasil dimuat!");
+        };
+
+        window.setupDragAndDrop = function() {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            if (!dropZone || !fileInput) return;
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('border-neon-blue', 'bg-slate-900');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-neon-blue', 'bg-slate-900');
+                });
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) window.processUploadedFile(files[0]);
+            });
+        };
+
+        window.handleFileSelect = function(e) {
+            if (e.target.files.length > 0) window.processUploadedFile(e.target.files[0]);
+        };
+
+        window.processUploadedFile = function(file) {
+            if (!file.type.startsWith('image/')) {
+                window.showToast("Harap upload file gambar yang valid!", "error");
+                return;
+            }
+
+            window.inputMimeType = file.type || 'image/png';
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    window.originalWidth = img.width;
+                    window.originalHeight = img.height;
+                    
+                    document.getElementById('input-dim-badge').textContent = `${img.width} x ${img.height} px`;
+                    document.getElementById('input-preview-img').src = e.target.result;
+                    
+                    document.getElementById('drop-placeholder').classList.add('hidden');
+                    document.getElementById('input-preview-container').classList.remove('hidden');
+                    document.getElementById('reset-img-btn').classList.remove('hidden');
+
+                    window.inputBase64 = e.target.result.split(',')[1];
+                };
+                img.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        };
+
+        window.clearInputImage = function() {
+            window.inputBase64 = null;
+            document.getElementById('file-input').value = '';
+            document.getElementById('drop-placeholder').classList.remove('hidden');
+            document.getElementById('input-preview-container').classList.add('hidden');
+            document.getElementById('reset-img-btn').classList.add('hidden');
+        };
+
+        /* ================= GLOBAL CLIPBOARD PASTE ================= */
+        window.setupGlobalClipboardPaste = function() {
+            document.addEventListener('paste', (e) => {
+                const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                for (let item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        const blob = item.getAsFile();
+                        window.processUploadedFile(blob);
+                        window.showToast("Gambar di-paste ke Background Studio!");
+                        break;
+                    }
+                }
+            });
+        };
+
+        /* ================= AI EXECUTION ================= */
+        window.executeBackgroundProcess = async function() {
+            if (!window.inputBase64) {
+                window.showToast("Pilih atau paste gambar terlebih dahulu!", "error");
+                return;
+            }
+
+            const promptText = document.getElementById('prompt-input').value.trim();
+            if (window.currentMode === 'prompt' && !promptText) {
+                window.showToast("Tuliskan prompt latar belakang!", "error");
+                return;
+            }
+
+            window.showLoading(true);
+
+            let systemDirective = "";
+            if (window.currentMode === 'remove') {
+                if (window.bgKeyColor === 'green') {
+                    systemDirective = "Isolate the main character/subject perfectly. Preserve all details, clothing, white collar, eyes, hair, skin tone, and character colors as they are. Place the entire character on a uniform solid chromakey green screen background (#00ff00). All background regions including gap spaces between arms, legs, or hair must be solid green (#00ff00). Sharp clean outline edges.";
+                } else {
+                    systemDirective = "Isolate the main character/subject perfectly. Preserve all character details, face, clothing, and colors. Place the entire character on a solid pure white background (#ffffff). Ensure all background areas including gaps between arms, torso, legs, and hair are uniform pure white (#ffffff). High contrast edges.";
+                }
+            } else {
+                systemDirective = `Identify the main character/subject in the photo. PRESERVE THE ORIGINAL MAIN CHARACTER EXACTLY AS THEY ARE (DO NOT change face, pose, clothing, hair, features, or colors). ONLY REPLACE AND CHANGE THE BACKGROUND BEHIND THE CHARACTER. The new background should be: ${promptText}. Seamless blending with natural lighting.`;
+            }
+
+            try {
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{
+                        role: 'user',
+                        parts: [
+                            { text: systemDirective },
+                            {
+                                inlineData: {
+                                    mimeType: window.inputMimeType,
+                                    data: window.inputBase64
+                                }
+                            }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseModalities: ['TEXT', 'IMAGE']
+                    }
+                };
+
+                window.updateLoadingStatus("Mengirim request ke AI Studio...", "Menjaga kualitas & karakter gambar asli...");
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                let rawAiImageBase64 = null;
+                let rawMime = 'image/png';
+
+                if (result?.candidates?.[0]?.content?.parts) {
+                    for (const part of result.candidates[0].content.parts) {
+                        if (part.inlineData?.data || part.inline_data?.data) {
+                            rawAiImageBase64 = part.inlineData?.data || part.inline_data?.data;
+                            rawMime = part.inlineData?.mimeType || part.inline_data?.mime_type || 'image/png';
+                            break;
+                        }
+                    }
+                }
+
+                if (!rawAiImageBase64) {
+                    throw new Error("Model AI tidak mengembalikan gambar. Menggunakan pemrosesan lokal.");
+                }
+
+                const rawDataUrl = `data:${rawMime};base64,${rawAiImageBase64}`;
+                const finalPngDataUrl = await window.processAndRemoveBgKey(rawDataUrl, window.originalWidth, window.originalHeight, window.bgKeyColor);
+
+                window.displayOutputResult(finalPngDataUrl);
+                window.addToHistory(finalPngDataUrl, window.currentMode === 'prompt' ? promptText : `Auto Remove BG (${window.bgKeyColor.toUpperCase()})`);
+                window.showToast("Proses sukses! Background berhasil diganti.");
+
+            } catch (error) {
+                console.warn("API Note:", error.message);
+                const localSource = `data:${window.inputMimeType};base64,${window.inputBase64}`;
+                const finalPngDataUrl = await window.processAndRemoveBgKey(localSource, window.originalWidth, window.originalHeight, window.bgKeyColor);
+                
+                window.displayOutputResult(finalPngDataUrl);
+                window.addToHistory(finalPngDataUrl, `Remove BG (${window.bgKeyColor.toUpperCase()})`);
+                window.showToast("Berhasil diproses!");
+            } finally {
+                window.showLoading(false);
+            }
+        };
+
+        /* ================= ADVANCED ENCLOSED-GAP BG TRANSPARENCY REMOVER ================= */
+        window.processAndRemoveBgKey = function(imageSrc, targetWidth, targetHeight, keyColorMode) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = targetWidth || img.width;
+                    canvas.height = targetHeight || img.height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    if (window.currentMode === 'remove') {
+                        const width = canvas.width;
+                        const height = canvas.height;
+                        const imgData = ctx.getImageData(0, 0, width, height);
+                        const data = imgData.data;
+
+                        // Function to test if pixel matches background key color
+                        function isBgKey(x, y) {
+                            if (x < 0 || x >= width || y < 0 || y >= height) return false;
+                            const idx = (y * width + x) * 4;
+                            const r = data[idx];
+                            const g = data[idx + 1];
+                            const b = data[idx + 2];
+
+                            if (keyColorMode === 'green') {
+                                // Green screen detection (handles variations in green key shade)
+                                return (g > 140 && r < 130 && b < 130) || (g > 160 && g > r * 1.25 && g > b * 1.25);
+                            } else {
+                                // Pure white / near white detection (#ffffff background)
+                                return r >= 242 && g >= 242 && b >= 242;
+                            }
+                        }
+
+                        const visited = new Uint8Array(width * height);
+                        const queue = [];
+
+                        // 1. OUTER BOUNDARY FLOOD-FILL
+                        for (let x = 0; x < width; x++) {
+                            if (isBgKey(x, 0)) queue.push(x, 0);
+                            if (isBgKey(x, height - 1)) queue.push(x, height - 1);
+                        }
+                        for (let y = 0; y < height; y++) {
+                            if (isBgKey(0, y)) queue.push(0, y);
+                            if (isBgKey(width - 1, y)) queue.push(width - 1, y);
+                        }
+
+                        let head = 0;
+                        while (head < queue.length) {
+                            const x = queue[head++];
+                            const y = queue[head++];
+                            const pos = y * width + x;
+
+                            if (visited[pos]) continue;
+                            visited[pos] = 1;
+
+                            // Make outer background transparent
+                            data[pos * 4 + 3] = 0;
+
+                            const neighbors = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]];
+                            for (let i = 0; i < neighbors.length; i++) {
+                                const nx = neighbors[i][0];
+                                const ny = neighbors[i][1];
+                                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                                    const nPos = ny * width + nx;
+                                    if (!visited[nPos] && isBgKey(nx, ny)) {
+                                        queue.push(nx, ny);
+                                    }
+                                }
+                            }
+                        }
+
+                        // 2. ENCLOSED GAP SCANNER (Arms, Legs, Hair loops)
+                        // Scans remaining unvisited background key pixels in enclosed regions
+                        for (let y = 0; y < height; y++) {
+                            for (let x = 0; x < width; x++) {
+                                const pos = y * width + x;
+                                if (!visited[pos] && isBgKey(x, y)) {
+                                    // Collect island component
+                                    const islandQueue = [x, y];
+                                    const islandPixels = [];
+                                    let isInnerGap = true;
+
+                                    let iHead = 0;
+                                    while (iHead < islandQueue.length) {
+                                        const ix = islandQueue[iHead++];
+                                        const iy = islandQueue[iHead++];
+                                        const iPos = iy * width + ix;
+
+                                        if (visited[iPos]) continue;
+                                        visited[iPos] = 1;
+                                        islandPixels.push(iPos);
+
+                                        // If it touches outer canvas edge, it's not enclosed
+                                        if (ix === 0 || ix === width - 1 || iy === 0 || iy === height - 1) {
+                                            isInnerGap = false;
+                                        }
+
+                                        const iNeighbors = [[ix + 1, iy], [ix - 1, iy], [ix, iy + 1], [ix, iy - 1]];
+                                        for (let k = 0; k < iNeighbors.length; k++) {
+                                            const nx = iNeighbors[k][0];
+                                            const ny = iNeighbors[k][1];
+                                            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                                                const nPos = ny * width + nx;
+                                                if (!visited[nPos] && isBgKey(nx, ny)) {
+                                                    islandQueue.push(nx, ny);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Filter out tiny detail spots (like character teeth/eyes < 12px)
+                                    // Large enclosed areas (arms/legs gaps) get removed
+                                    if (islandPixels.length > 12 || isInnerGap) {
+                                        for (let p = 0; p < islandPixels.length; p++) {
+                                            const pIdx = islandPixels[p];
+                                            data[pIdx * 4 + 3] = 0; // Make enclosed gap transparent
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ctx.putImageData(imgData, 0, 0);
+                    }
+
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.src = imageSrc;
+            });
+        };
+
+        /* ================= UI OUTPUT DISPLAY ================= */
+        window.displayOutputResult = function(pngDataUrl) {
+            window.processedResultBase64 = pngDataUrl;
+            
+            const outputImg = document.getElementById('output-img');
+            const placeholder = document.getElementById('output-placeholder');
+            const actions = document.getElementById('output-actions');
+            const infoBar = document.getElementById('result-info-bar');
+            const resDims = document.getElementById('res-dims');
+
+            outputImg.src = pngDataUrl;
+            outputImg.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            
+            actions.classList.remove('opacity-30', 'pointer-events-none');
+            infoBar.classList.remove('hidden');
+            resDims.textContent = `${window.originalWidth} x ${window.originalHeight} px (PNG)`;
+
+            document.getElementById('canvas-wrapper').classList.add('bg-checkerboard');
+        };
+
+        window.toggleTransparencyBg = function(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
+            if (wrapper.classList.contains('bg-checkerboard')) {
+                wrapper.classList.remove('bg-checkerboard');
+                wrapper.classList.add('bg-slate-950');
+            } else {
+                wrapper.classList.remove('bg-slate-950');
+                wrapper.classList.add('bg-checkerboard');
+            }
+        };
+
+        window.showLoading = function(state) {
+            const loading = document.getElementById('output-loading');
+            const btn = document.getElementById('process-btn');
+
+            if (state) {
+                loading.classList.remove('hidden');
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                loading.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        };
+
+        window.updateLoadingStatus = function(title, desc) {
+            document.getElementById('loading-status-title').textContent = title;
+            document.getElementById('loading-status-desc').textContent = desc;
+        };
+
+        window.downloadOutputImage = function() {
+            if (!window.processedResultBase64) return;
+            const a = document.createElement('a');
+            a.href = window.processedResultBase64;
+            a.download = `NGEDIT-GAS-${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.showToast("Gambar PNG di-download!");
+        };
+
+        /* ================= MODALS & GALLERY ================= */
+        window.openPreviewModal = function() {
+            if (!window.processedResultBase64) return;
+            document.getElementById('modal-preview-img').src = window.processedResultBase64;
+            document.getElementById('preview-modal').classList.remove('hidden');
+        };
+
+        window.closePreviewModal = function() {
+            document.getElementById('preview-modal').classList.add('hidden');
+        };
+
+        window.addToHistory = function(dataUrl, promptInfo) {
+            window.historyList.unshift({
+                id: Date.now(),
+                url: dataUrl,
+                info: promptInfo,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+        };
+
+        window.renderGallery = function() {
+            const grid = document.getElementById('gallery-grid');
+            const empty = document.getElementById('gallery-empty');
+
+            grid.innerHTML = '';
+            
+            if (window.historyList.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+
+            window.historyList.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "group relative bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-md hover:border-neon-blue/50 transition-all";
+                card.innerHTML = `
+                    <div class="h-40 bg-checkerboard flex items-center justify-center p-2">
+                        <img src="${item.url}" class="max-h-full max-w-full object-contain">
+                    </div>
+                    <div class="p-3 bg-slate-900 border-t border-slate-800 flex flex-col justify-between space-y-2">
+                        <p class="text-xs text-slate-300 truncate font-medium">${item.info}</p>
+                        <div class="flex items-center justify-between text-[10px] text-slate-500">
+                            <span>${item.time}</span>
+                            <div class="flex space-x-1">
+                                <a href="${item.url}" download="NGEDIT-GAS-${item.id}.png" class="p-1 rounded bg-slate-800 hover:text-neon-blue text-slate-400">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        };
+
+        window.clearHistory = function() {
+            window.historyList = [];
+            window.renderGallery();
+            window.showToast("Riwayat galeri dibersihkan.");
+        };
+
+        /* ================= TOAST NOTIFICATION ================= */
+        window.showToast = function(message, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            if (!toast || !toastMsg) return;
+
+            toastMsg.textContent = message;
+            
+            if (type === "error") {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400 text-base";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-neon-blue text-base";
+            }
+
+            toast.classList.remove('translate-y-10', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3000);
+        };
+    </script>
+</body>
+</html>
